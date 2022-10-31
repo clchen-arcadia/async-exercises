@@ -2,8 +2,14 @@
 
 const BASE_URL_NUMBERS = "http://numbersapi.com";
 
+const $multiNumFacts = $('#multi-num-facts');
+const $oneNumMultiFacts = $('#one-num-multi-facts');
+
+/** Function accepts a number and gets four facts about it
+ * from the Numbers API.
+ */
 async function getFourFacts(number){
-  // uses promise.all
+
   const fact1 = getOneFactPromise(number);
   const fact2 = getOneFactPromise(number);
   const fact3 = getOneFactPromise(number);
@@ -14,11 +20,14 @@ async function getFourFacts(number){
   );
 
   const allFacts = await allPromises;
-  console.log('allFacts is', allFacts);
+
+  return allFacts;
 }
 
+/** Function accepts a number and returns a fact about it (just the text of the fact)
+ * From the Numbers API
+ */
 async function getOneFactPromise(num){
-  //single request
 
   const response = await axios({
     url: `${BASE_URL_NUMBERS}/${num}?json`,
@@ -27,3 +36,18 @@ async function getOneFactPromise(num){
 
   return response.data.text;
 }
+
+
+async function putOneNumMultiFactsOnPage(num){
+
+  const listFacts = await getFourFacts(num);
+  for(let fact of listFacts){
+    $oneNumMultiFacts.append($(`
+    <li>
+      ${fact}
+    </li>
+    `));
+  }
+}
+
+putOneNumMultiFactsOnPage(42);
