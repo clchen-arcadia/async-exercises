@@ -1,16 +1,13 @@
 "use strict";
 
+const BASE_URL = "https://deckofcardsapi.com/api";
+
 const $cardButton = $('#get-card-btn');
 const $cardList = $('#cards-list');
 
-const BASE_URL = "https://deckofcardsapi.com/api";
-const BASE_URL_OUR_DECK = "https://deckofcardsapi.com/api/deck/h9qmtxoemfdv";
-const DECK_ID = "h9qmtxoemfdv";
-
-//https://deckofcardsapi.com/api/deck/new/shuffle/?deck_count=1
 
 /**
- * Needs to return deck ID
+ * Function queries API and returns deckID for a new shuffled deck.
  */
 async function getNewShuffledDeck(){
 
@@ -19,52 +16,63 @@ async function getNewShuffledDeck(){
     method: "GET"
   });
 
-  return response.deck_id;
+  return response.data.deck_id;
 }
 
 
-// TODO: make a new deck every time.
-// This is for exiting problems down the road! :) :)
-// decks persisting over time? 2 weeks... lets just not do this.
-
-//TODO: this needs to also accept the deck ID to do this!!
 /**
- * Function queries Cards API to draw one card from our deck
+ * Function queries Cards API to draw one card from our deck.
+ * Function accepts deckID and returns image URL from API.
  */
 
 async function getCardImage(deckID){
+
   const response = await axios({
     url: `${BASE_URL}/deck/${deckID}/draw`,
     method: "GET"
   });
 
-  return response.cards[0].image;
+  return response.data.cards[0].image;
 }
 
-//TODO: we're not doing this
+// NOTE: We're not using this function anymore
 /**
  * Function queries Cards API to shuffle our deck.
  */
-async function shuffleOurDeck(){
-  const response = await axios({
-    url: `${BASE_URL_OUR_DECK}/shuffle`,
-    method: "GET"
-  });
 
-  console.debug(response);
+// async function shuffleOurDeck(){
+//   const response = await axios({
+//     url: `${BASE_URL_OUR_DECK}/shuffle`,
+//     method: "GET"
+//   });
+
+//   console.debug(response);
+// }
+
+/**
+ * Function manipulates DOM and appends picture of card.
+ * Function accepts URL for an image.
+ */
+
+function putCardOnPage(imageURL) {
+
+  $cardList.append($(`
+  <li>
+    <img src="${imageURL}">
+  </li>
+  `));
 }
 
+async function handleButtonClick(){
 
+  if(deckID === undefined){
+    var deckID = await getNewShuffledDeck();
+  }
 
-
-
-
-async function onStart(){
-  //call axios. shuffle preexisting deck.
-
-  // return deckID;
+  let imageURL = await getCardImage(deckID);
+  putCardOnPage(imageURL);
 }
 
-const deckID = await onStart();
+let deckID;
 
-$cardButton.on('click', handleButtonClick)
+$cardButton.on('click', handleButtonClick);

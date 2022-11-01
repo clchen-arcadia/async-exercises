@@ -45,14 +45,14 @@ async function getOneFactPromise(num){
  */
 async function getMultiNumFacts(nums){
 
-    const numStr = nums.join(',');
+  const numStr = nums.join(',');
 
-    const response = await axios({
-      url: `${BASE_URL_NUMBERS}/${numStr}?json`,
-      method: "GET",
-    });
+  const response = await axios({
+    url: `${BASE_URL_NUMBERS}/${numStr}?json`,
+    method: "GET",
+  });
 
-    return response.data;
+  return response.data;
 }
 
 /** Gets the Multiple Number facts and displays them as list items on the page
