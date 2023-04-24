@@ -27,6 +27,8 @@ async function getNewShuffledDeck(){
 
 async function getCardImage(deckID){
 
+
+  console.debug("deckID is", deckID);
   const response = await axios({
     url: `${BASE_URL}/deck/${deckID}/draw`,
     method: "GET"
@@ -66,7 +68,7 @@ function putCardOnPage(imageURL) {
 async function handleButtonClick(){
 
   if(deckID === undefined){
-    var deckID = await getNewShuffledDeck();
+    deckID = await getNewShuffledDeck();
   }
 
   let imageURL = await getCardImage(deckID);
@@ -76,3 +78,13 @@ async function handleButtonClick(){
 let deckID;
 
 $cardButton.on('click', handleButtonClick);
+
+/**
+ * How to avoid using global variable for deckId?
+ * 1. enclosure. define drawCard() within handleButtonClick()
+ * 2. create function that assigns deck ID, then defines drawCard() then RETURNS that fn.
+ * 3. Use bind to bind context of deckID TO the drawCard() function. same principle as 2.
+ * 4. not easy to test. but you can deckID.bind(function drawCardAnon(){})
+ */
+
+//NOTE: important naming! factP for promise of fact. factResp for response data object yet to be parsed
